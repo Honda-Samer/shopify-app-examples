@@ -1,18 +1,18 @@
 import { Page } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
-import { QRCodeForm } from "../../components";
+import { DiscountForm } from "../../components";
 
 export default function ManageCode() {
-  const breadcrumbs = [{ content: "QR codes", url: "/" }];
+  const breadcrumbs = [{ content: "Discounts", url: "/" }];
 
   return (
     <Page>
       <TitleBar
-        title="Create new QR code"
+        title="Create new Discount"
         breadcrumbs={breadcrumbs}
         primaryAction={null}
       />
-      <QRCodeForm />
+      <DiscountForm />
     </Page>
   );
 }

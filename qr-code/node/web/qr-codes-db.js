@@ -168,7 +168,7 @@ export const QRCodesDB = {
   /* Initializes the connection with the app's sqlite3 database */
   init: async function () {
     /* Initializes the connection to the database */
-    this.db = this.db ?? new sqlite3.Database(DEFAULT_DB_FILE);
+    this.db.db = this.db.db ?? new sqlite3.Database(DEFAULT_DB_FILE);
 
     const hasQrCodesTable = await this.__hasQrCodesTable();
 
@@ -201,7 +201,7 @@ export const QRCodesDB = {
   /* Perform a query on the database. Used by the various CRUD methods. */
   __query: function (sql, params = []) {
     return new Promise((resolve, reject) => {
-      this.db.all(sql, params, (err, result) => {
+      this.db.db.all(sql, params, (err, result) => {
         if (err) {
           reject(err);
           return;

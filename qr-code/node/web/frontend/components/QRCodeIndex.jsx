@@ -17,51 +17,20 @@ import { useMedia } from "@shopify/react-hooks";
 import dayjs from "dayjs";
 
 /* Markup for small screen sizes (mobile) */
-function SmallScreenCard({
-  id,
-  title,
-  product,
-  discountCode,
-  scans,
-  createdAt,
-  navigate,
-}) {
+function SmallScreenCard({ discount }) {
   return (
-    <UnstyledLink onClick={() => navigate(`/qrcodes/${id}`)}>
+    <UnstyledLink onClick={() => navigate(`/Discounts/${id}`)}>
       <div
         style={{ padding: "0.75rem 1rem", borderBottom: "1px solid #E1E3E5" }}
       >
         <Stack>
           <Stack.Item>
-            <Thumbnail
-              source={product?.images?.edges[0]?.node?.url || ImageMajor}
-              alt="placeholder"
-              color="base"
-              size="small"
-            />
-          </Stack.Item>
-          <Stack.Item fill>
-            <Stack vertical={true}>
-              <Stack.Item>
-                <p>
-                  <TextStyle variation="strong">
-                    {truncate(title, 35)}
-                  </TextStyle>
-                </p>
-                <p>{truncate(product?.title, 35)}</p>
-                <p>{dayjs(createdAt).format("MMMM D, YYYY")}</p>
-              </Stack.Item>
-              <div style={{ display: "flex" }}>
-                <div style={{ flex: "3" }}>
-                  <TextStyle variation="subdued">Discount</TextStyle>
-                  <p>{discountCode || "-"}</p>
-                </div>
-                <div style={{ flex: "2" }}>
-                  <TextStyle variation="subdued">Scans</TextStyle>
-                  <p>{scans}</p>
-                </div>
-              </div>
-            </Stack>
+            <p>
+              <TextStyle variation="strong">
+                {truncate(discount.desc, 35)}
+              </TextStyle>
+            </p>
+            <p>{dayjs(desc.createdDate).format("MMMM D, YYYY")}</p>
           </Stack.Item>
         </Stack>
       </div>
@@ -69,66 +38,77 @@ function SmallScreenCard({
   );
 }
 
-export function QRCodeIndex({ QRCodes, loading }) {
+export function QRCodeIndex({ Discounts, loading }) {
   const navigate = useNavigate();
 
   /* Check if screen is small */
   const isSmallScreen = useMedia("(max-width: 640px)");
 
-  /* Map over QRCodes for small screen */
-  const smallScreenMarkup = QRCodes.map((QRCode) => (
-    <SmallScreenCard key={QRCode.id} navigate={navigate} {...QRCode} />
+  /* Map over Discounts for small screen */
+  const smallScreenMarkup = Discounts.map((Discount) => (
+    <SmallScreenCard key={Discount.id} navigate={navigate} discount={Discount} />
   ));
 
   const resourceName = {
-    singular: "QR code",
-    plural: "QR codes",
+    singular: "Discount",
+    plural: "Discounts",
   };
 
-  const rowMarkup = QRCodes.map(
-    ({ id, title, product, discountCode, scans, createdAt }, index) => {
-      const deletedProduct = product.title.includes("Deleted product");
+  const rowMarkup = Discounts.map(
+    (discount, index) => {
+      const deletedProduct = (!!discount?.deleted_at);
 
-      /* The form layout, created using Polaris components. Includes the QR code data set above. */
-      return (
-        <IndexTable.Row
-          id={id}
-          key={id}
-          position={index}
-          onClick={() => {
-            navigate(`/qrcodes/${id}`);
-          }}
-        >
-          <IndexTable.Cell>
-            <Thumbnail
-              source={product?.images?.edges[0]?.node?.url || ImageMajor}
-              alt="placeholder"
-              color="base"
-              size="small"
-            />
-          </IndexTable.Cell>
-          <IndexTable.Cell>
-            <UnstyledLink data-primary-link url={`/qrcodes/${id}`}>
-              {truncate(title, 25)}
-            </UnstyledLink>
-          </IndexTable.Cell>
-          <IndexTable.Cell>
-            <Stack>
-              {deletedProduct && (
-                <Icon source={DiamondAlertMajor} color="critical" />
-              )}
-              <TextStyle variation={deletedProduct ? "negative" : null}>
-                {truncate(product?.title, 25)}
-              </TextStyle>
-            </Stack>
-          </IndexTable.Cell>
-          <IndexTable.Cell>{discountCode}</IndexTable.Cell>
-          <IndexTable.Cell>
-            {dayjs(createdAt).format("MMMM D, YYYY")}
-          </IndexTable.Cell>
-          <IndexTable.Cell>{scans}</IndexTable.Cell>
-        </IndexTable.Row>
-      );
+      if(!deletedProduct)
+        return (
+          <IndexTable.Row
+            id={discount?._id}
+            key={discount?._id}
+            position={index}
+            onClick={() => {
+              navigate(`/qrcodes/${discount?._id}`);
+            }}
+          >
+            <IndexTable.Cell>
+              <UnstyledLink data-primary-link url={`/qrcodes/${discount?._id}`}>
+                {discount?.desc} 
+              </UnstyledLink>
+            </IndexTable.Cell>
+
+            <IndexTable.Cell>
+              <UnstyledLink data-primary-link url={`/qrcodes/${discount?._id}`}>
+                {discount?.discount_value} 
+              </UnstyledLink>
+            </IndexTable.Cell>
+
+            <IndexTable.Cell>
+              <UnstyledLink data-primary-link url={`/qrcodes/${discount?._id}`}>
+              {discount?.discount_type}
+              </UnstyledLink>
+            </IndexTable.Cell>
+
+            <IndexTable.Cell>
+              <UnstyledLink data-primary-link url={`/qrcodes/${discount?._id}`}>
+              {discount?.discount_cap}
+              </UnstyledLink>
+            </IndexTable.Cell>
+
+            <IndexTable.Cell>
+              <UnstyledLink data-primary-link url={`/qrcodes/${discount?._id}`}>
+              {discount?.max_uses_per_user}
+              </UnstyledLink>
+            </IndexTable.Cell>
+
+            <IndexTable.Cell>
+              {dayjs(discount?.createdDate).format("MMMM D, YYYY")}
+            </IndexTable.Cell>
+
+            <IndexTable.Cell>
+              <UnstyledLink data-primary-link url={`/qrcodes/${discount?._id}`}>
+              {discount?.uses.length}
+              </UnstyledLink>
+            </IndexTable.Cell>
+          </IndexTable.Row>
+        );
     }
   );
 
@@ -140,14 +120,15 @@ export function QRCodeIndex({ QRCodes, loading }) {
       ) : (
         <IndexTable
           resourceName={resourceName}
-          itemCount={QRCodes.length}
+          itemCount={Discounts.length}
           headings={[
-            { title: "Thumbnail", hidden: true },
-            { title: "Title" },
-            { title: "Product" },
-            { title: "Discount" },
+            { title: "Description" },
+            { title: "Discount Value" },
+            { title: "Discount Type" },
+            { title: "Discount Cap" },
+            { title: "Maximum Uses per User" },
             { title: "Date created" },
-            { title: "Scans" },
+            { title: "Total Number of Uses" },
           ]}
           selectable={false}
           loading={loading}
@@ -161,5 +142,5 @@ export function QRCodeIndex({ QRCodes, loading }) {
 
 /* A function to truncate long strings */
 function truncate(str, n) {
-  return str.length > n ? str.substr(0, n - 1) + "…" : str;
+  return str?.length > n ? str.substr(0, n - 1) + "…" : str;
 }

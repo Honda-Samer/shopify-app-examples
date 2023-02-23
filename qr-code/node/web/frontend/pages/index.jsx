@@ -6,32 +6,23 @@ import {
   Page,
   SkeletonBodyText,
 } from "@shopify/polaris";
+import { useEffect } from "react";
 import { QRCodeIndex } from "../components";
 import { useAppQuery } from "../hooks";
 
 export default function HomePage() {
-  /*
-    Add an App Bridge useNavigate hook to set up the navigate function.
-    This function modifies the top-level browser URL so that you can
-    navigate within the embedded app and keep the browser in sync on reload.
-  */
   const navigate = useNavigate();
 
-  /* useAppQuery wraps react-query and the App Bridge authenticatedFetch function */
-  const {
-    data: QRCodes,
-    isLoading,
-
-    /*
-      react-query provides stale-while-revalidate caching.
-      By passing isRefetching to Index Tables we can show stale data and a loading state.
-      Once the query refetches, IndexTable updates and the loading state is removed.
-      This ensures a performant UX.
-    */
-    isRefetching,
-  } = useAppQuery({
-    url: "/api/qrcodes",
+  const vendor_id = '63f2271a3d38d578e0b190c0';
+  const { isLoading, data, isRefetching } = useAppQuery({
+    url: `https://api.tutoruu.com/api/vendor/${vendor_id}`
   });
+
+  let Discounts
+  useEffect(() => {  
+    if (!data) return Discounts = null;
+    console.log(Discounts)
+  }, [data])
 
   /* loadingMarkup uses the loading component from AppBridge and components from Polaris  */
   const loadingMarkup = isLoading ? (
@@ -42,19 +33,19 @@ export default function HomePage() {
   ) : null;
 
   /* Set the QR codes to use in the list */
-  const qrCodesMarkup = QRCodes?.length ? (
-    <QRCodeIndex QRCodes={QRCodes} loading={isRefetching} />
+  const DiscountsMarkup = data?.discounts?.length ? (
+    <QRCodeIndex Discounts={data.discounts} loading={isRefetching} />
   ) : null;
 
   /* Use Polaris Card and EmptyState components to define the contents of the empty state */
   const emptyStateMarkup =
-    !isLoading && !QRCodes?.length ? (
+    !isLoading && !data?.discounts?.length ? (
       <Card sectioned>
         <EmptyState
-          heading="Create unique QR codes for your product"
+          heading="Create discounts for your products"
           /* This button will take the user to a Create a QR code page */
           action={{
-            content: "Create QR code",
+            content: "Create New Discount",
             onAction: () => navigate("/qrcodes/new"),
           }}
           image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
@@ -71,18 +62,18 @@ export default function HomePage() {
     and include the empty state contents set above.
   */
   return (
-    <Page fullWidth={!!qrCodesMarkup}>
+    <Page fullWidth={!!DiscountsMarkup}>
       <TitleBar
-        title="QR codes"
+        title="Discounts"
         primaryAction={{
-          content: "Create QR code",
+          content: "Create New Discount",
           onAction: () => navigate("/qrcodes/new"),
         }}
       />
       <Layout>
         <Layout.Section>
           {loadingMarkup}
-          {qrCodesMarkup}
+          {DiscountsMarkup}
           {emptyStateMarkup}
         </Layout.Section>
       </Layout>
