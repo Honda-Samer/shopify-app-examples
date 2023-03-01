@@ -19,7 +19,7 @@ export default function QRCodeEdit() {
     isLoading,
     isRefetching,
   } = useAppQuery({
-    url: `https://api.tutoruu.com/api/discount/${id}`,
+    url: `http://127.0.0.1:3030/api/discount/${id}`,
     reactQueryOptions: {
       refetchOnReconnect: false,
     },

@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@shopify/shopify-api": "^6.2.0",
+    "axios": "^1.3.4"
+  }
+}

@@ -25,8 +25,9 @@ export function DiscountForm({ Discount: InitialDiscount }) {
   const onSubmit = useCallback(
     (body) => {
       (async () => {
+        // create discout on core api
         const parsedBody = {
-          vendor_id: '63f2271a3d38d578e0b190c0',
+          vendor_id: '63fe1ffa3f6601858912f8cf',
           discount_value: parseFloat(body.discount_value),
           discount_type: body.discount_type[0],
           discount_cap: parseFloat(body.discount_cap),
@@ -36,7 +37,7 @@ export function DiscountForm({ Discount: InitialDiscount }) {
         
         const DiscountId = Discount?._id;
         const endpoint = DiscountId ? DiscountId : "";
-        const url = `https://api.tutoruu.com/api/discount/${endpoint}`;
+        const url = `http://127.0.0.1:3030/api/discount/${endpoint}`;
         const method = DiscountId ? "PATCH" : "POST"; 
         const response = await fetch(url, {
           method,
@@ -47,6 +48,11 @@ export function DiscountForm({ Discount: InitialDiscount }) {
           makeClean();
           const Discount = (await response.json()).discount;
           console.log(Discount);
+
+          // create discount using shopify api
+          // const { createDiscount } = require('../../helpers/discounts')
+          // createDiscount()
+
           if (!Discount) {
             navigate(`/qrcodes/${Discount._id}`);
           } else {

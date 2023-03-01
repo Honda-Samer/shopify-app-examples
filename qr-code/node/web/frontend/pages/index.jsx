@@ -13,9 +13,9 @@ import { useAppQuery } from "../hooks";
 export default function HomePage() {
   const navigate = useNavigate();
 
-  const vendor_id = '63f2271a3d38d578e0b190c0';
+  const vendor_id = '63fe1ffa3f6601858912f8cf';
   const { isLoading, data, isRefetching } = useAppQuery({
-    url: `https://api.tutoruu.com/api/vendor/${vendor_id}`
+    url: `http://127.0.0.1:3030/api/vendor/${vendor_id}`
   });
 
   let Discounts
