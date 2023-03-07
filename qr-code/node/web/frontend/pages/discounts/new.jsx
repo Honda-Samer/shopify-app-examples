@@ -2,7 +2,7 @@ import { Page } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
 import { DiscountForm } from "../../components";
 
-export default function ManageCode() {
+export default function CreateDiscount() {
   const breadcrumbs = [{ content: "Discounts", url: "/" }];
 
   return (

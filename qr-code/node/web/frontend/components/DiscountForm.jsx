@@ -13,9 +13,11 @@ import {
   useNavigate,
 } from "@shopify/app-bridge-react";
 
-import { useAuthenticatedFetch, useAppQuery } from "../hooks";
+import { useAppQuery, useAuthenticatedFetch } from "../hooks";
 
 import { useForm, useField, notEmptyString } from "@shopify/react-form";
+
+import { VendorDB } from "../../vendor-db.js";
 
 export function DiscountForm({ Discount: InitialDiscount }) {
   const [Discount, setDiscount] = useState(InitialDiscount);
@@ -26,8 +28,10 @@ export function DiscountForm({ Discount: InitialDiscount }) {
     (body) => {
       (async () => {
         // create discout on core api
+        const vendor_id = (await VendorDB.read())[0]?.id
+        console.log(vendor_id)
         const parsedBody = {
-          vendor_id: '63fe1ffa3f6601858912f8cf',
+          vendor_id,
           discount_value: parseFloat(body.discount_value),
           discount_type: body.discount_type[0],
           discount_cap: parseFloat(body.discount_cap),
@@ -49,12 +53,8 @@ export function DiscountForm({ Discount: InitialDiscount }) {
           const Discount = (await response.json()).discount;
           console.log(Discount);
 
-          // create discount using shopify api
-          // const { createDiscount } = require('../../helpers/discounts')
-          // createDiscount()
-
           if (!Discount) {
-            navigate(`/qrcodes/${Discount._id}`);
+            navigate(`/discounts/${Discount._id}`);
           } else {
             setDiscount(Discount);
             navigate('/');

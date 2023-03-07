@@ -6,13 +6,13 @@ let { restResources } = await import(
 );
 
 import { join } from "path";
-import { QRCodesDB } from "./qr-codes-db.js";
+import { VendorDB } from "./vendor-db.js";
 
 const dbFile = join(process.cwd(), "database.sqlite");
 const sessionDb = new SQLiteSessionStorage(dbFile);
 // Initialize SQLite DB
-QRCodesDB.db = sessionDb.db;
-QRCodesDB.init();
+VendorDB.db = sessionDb.db;
+VendorDB.init();
 
 const shopify = shopifyApp({
   api: {

@@ -7,16 +7,13 @@ import {
   SkeletonBodyText,
 } from "@shopify/polaris";
 import { useEffect } from "react";
-import { QRCodeIndex } from "../components";
+import { DiscountIndex, VendorForm } from "../components";
 import { useAppQuery } from "../hooks";
 
 export default function HomePage() {
   const navigate = useNavigate();
-
-  const vendor_id = '63fe1ffa3f6601858912f8cf';
-  const { isLoading, data, isRefetching } = useAppQuery({
-    url: `http://127.0.0.1:3030/api/vendor/${vendor_id}`
-  });
+  
+  const { isLoading, data, isRefetching } = useAppQuery({ url: `/api/vendor/` });
 
   let Discounts
   useEffect(() => {  
@@ -24,7 +21,6 @@ export default function HomePage() {
     console.log(Discounts)
   }, [data])
 
-  /* loadingMarkup uses the loading component from AppBridge and components from Polaris  */
   const loadingMarkup = isLoading ? (
     <Card sectioned>
       <Loading />
@@ -32,21 +28,20 @@ export default function HomePage() {
     </Card>
   ) : null;
 
-  /* Set the QR codes to use in the list */
+  const VendorFormMarkup = !data && !isLoading ? ( <VendorForm /> ) : null;
+  
   const DiscountsMarkup = data?.discounts?.length ? (
-    <QRCodeIndex Discounts={data.discounts} loading={isRefetching} />
+    <DiscountIndex Discounts={data.discounts} loading={isRefetching} />
   ) : null;
 
-  /* Use Polaris Card and EmptyState components to define the contents of the empty state */
   const emptyStateMarkup =
-    !isLoading && !data?.discounts?.length ? (
+    !isLoading && !data?.discounts?.length && !!data ? (
       <Card sectioned>
         <EmptyState
           heading="Create discounts for your products"
-          /* This button will take the user to a Create a QR code page */
           action={{
             content: "Create New Discount",
-            onAction: () => navigate("/qrcodes/new"),
+            onAction: () => navigate("/discounts/new"),
           }}
           image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
         >
@@ -61,18 +56,27 @@ export default function HomePage() {
     Use Polaris Page and TitleBar components to create the page layout,
     and include the empty state contents set above.
   */
+  
+  const titleBar = isLoading? null : (!data && !isLoading) ? ( <TitleBar title="Create Your Vendor Account On Tutoruu" /> ) :
+    ( <TitleBar
+      title="Discounts"
+      primaryAction={{
+          content: "Update Shop Info",
+          onAction: () => navigate("/vendors/edit"),
+        }}
+      secondaryActions={{
+        content: "Create New Discount",
+        onAction: () => navigate("/discounts/new"),
+      }}
+  /> )
+
   return (
     <Page fullWidth={!!DiscountsMarkup}>
-      <TitleBar
-        title="Discounts"
-        primaryAction={{
-          content: "Create New Discount",
-          onAction: () => navigate("/qrcodes/new"),
-        }}
-      />
+      {titleBar} 
       <Layout>
         <Layout.Section>
           {loadingMarkup}
+          {VendorFormMarkup}
           {DiscountsMarkup}
           {emptyStateMarkup}
         </Layout.Section>

@@ -9,7 +9,7 @@
 import express from "express";
 
 import shopify from "../shopify.js";
-import { QRCodesDB } from "../qr-codes-db.js";
+import { QRCodesDB } from "../vendor-db.js";
 import {
   getQrCodeOr404,
   getShopUrlFromSession,

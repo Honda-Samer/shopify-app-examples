@@ -1,19 +1,14 @@
 import { useParams } from "react-router-dom";
-import { Card, Page, Layout, SkeletonBodyText } from "@shopify/polaris";
+import { Page } from "@shopify/polaris";
 import { Loading, TitleBar } from "@shopify/app-bridge-react";
 import { useAppQuery } from "../../hooks";
 import { DiscountForm } from "../../components";
 
-export default function QRCodeEdit() {
+export default function DiscountEdit() {
   const breadcrumbs = [{ content: "Discounts", url: "/" }];
 
   const { id } = useParams();
-
-  /*
-    Fetch the QR code.
-    useAppQuery uses useAuthenticatedQuery from App Bridge to authenticate the request.
-    The backend supplements app data with data queried from the Shopify GraphQL Admin API.
-  */
+  
   const {
     data: discount,
     isLoading,
@@ -25,12 +20,11 @@ export default function QRCodeEdit() {
     },
   });
 
-  /* Loading action and markup that uses App Bridge and Polaris components */
   if (isLoading || isRefetching) {
     return (
       <Page>
         <TitleBar
-          title="Edit Discount code"
+          title="Edit Discount"
           breadcrumbs={breadcrumbs}
           primaryAction={null}
         />
@@ -42,7 +36,7 @@ export default function QRCodeEdit() {
   return (
     <Page>
       <TitleBar
-        title="Edit QR code"
+        title="Edit Discount"
         breadcrumbs={breadcrumbs}
         primaryAction={null}
       />

@@ -1,14 +1,11 @@
 import { useNavigate } from "@shopify/app-bridge-react";
 import {
   Card,
-  Icon,
   IndexTable,
   Stack,
   TextStyle,
-  Thumbnail,
   UnstyledLink,
 } from "@shopify/polaris";
-import { DiamondAlertMajor, ImageMajor } from "@shopify/polaris-icons";
 
 /* useMedia is used to support multiple screen sizes */
 import { useMedia } from "@shopify/react-hooks";
@@ -38,7 +35,7 @@ function SmallScreenCard({ discount }) {
   );
 }
 
-export function QRCodeIndex({ Discounts, loading }) {
+export function DiscountIndex({ Discounts, loading }) {
   const navigate = useNavigate();
 
   /* Check if screen is small */
@@ -65,35 +62,35 @@ export function QRCodeIndex({ Discounts, loading }) {
             key={discount?._id}
             position={index}
             onClick={() => {
-              navigate(`/qrcodes/${discount?._id}`);
+              navigate(`/discounts/${discount?._id}`);
             }}
           >
             <IndexTable.Cell>
-              <UnstyledLink data-primary-link url={`/qrcodes/${discount?._id}`}>
+              <UnstyledLink data-primary-link url={`/discounts/${discount?._id}`}>
                 {discount?.desc} 
               </UnstyledLink>
             </IndexTable.Cell>
 
             <IndexTable.Cell>
-              <UnstyledLink data-primary-link url={`/qrcodes/${discount?._id}`}>
+              <UnstyledLink data-primary-link url={`/discounts/${discount?._id}`}>
                 {discount?.discount_value} 
               </UnstyledLink>
             </IndexTable.Cell>
 
             <IndexTable.Cell>
-              <UnstyledLink data-primary-link url={`/qrcodes/${discount?._id}`}>
+              <UnstyledLink data-primary-link url={`/discounts/${discount?._id}`}>
               {discount?.discount_type}
               </UnstyledLink>
             </IndexTable.Cell>
 
             <IndexTable.Cell>
-              <UnstyledLink data-primary-link url={`/qrcodes/${discount?._id}`}>
+              <UnstyledLink data-primary-link url={`/discounts/${discount?._id}`}>
               {discount?.discount_cap}
               </UnstyledLink>
             </IndexTable.Cell>
 
             <IndexTable.Cell>
-              <UnstyledLink data-primary-link url={`/qrcodes/${discount?._id}`}>
+              <UnstyledLink data-primary-link url={`/discounts/${discount?._id}`}>
               {discount?.max_uses_per_user}
               </UnstyledLink>
             </IndexTable.Cell>
@@ -103,7 +100,7 @@ export function QRCodeIndex({ Discounts, loading }) {
             </IndexTable.Cell>
 
             <IndexTable.Cell>
-              <UnstyledLink data-primary-link url={`/qrcodes/${discount?._id}`}>
+              <UnstyledLink data-primary-link url={`/discounts/${discount?._id}`}>
               {discount?.uses.length}
               </UnstyledLink>
             </IndexTable.Cell>
